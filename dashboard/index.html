@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Let's Play — Live Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="dash">
+
+    <header class="dash-head">
+      <div>
+        <span class="dash-title">Let's Play</span>
+        <span class="dash-sub">live activity <span class="pulse-dot" id="pulse-dot"></span></span>
+      </div>
+      <div class="dash-meta">
+        <span>Staged demo data</span>
+        <span id="last-updated">updated just now</span>
+      </div>
+    </header>
+
+    <section class="kpi-row">
+      <div class="kpi">
+        <span class="kpi-label">Active learners now</span>
+        <span class="kpi-value" id="kpi-active">—</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Lessons completed today</span>
+        <span class="kpi-value" id="kpi-lessons">—</span>
+      </div>
+      <div class="kpi">
+        <span class="kpi-label">Streaks kept today</span>
+        <span class="kpi-value" id="kpi-streaks">—</span>
+      </div>
+      <div class="kpi kpi-word">
+        <span class="kpi-label">Word of the moment</span>
+        <span class="kpi-value kpi-word-value" id="kpi-word">—</span>
+      </div>
+    </section>
+
+    <section class="lower-row">
+      <div class="panel leaderboard">
+        <h2>Top languages today</h2>
+        <div id="lang-bars" class="lang-bars"></div>
+      </div>
+
+      <div class="panel feed">
+        <h2>Activity feed</h2>
+        <ul id="feed-list" class="feed-list"></ul>
+      </div>
+    </section>
+
+  </div>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Let's Play — Level 1 prototype</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="workspace" id="workspace">
+  <div class="stage">
+    <div class="phone" id="phone">
+      <div class="notch"></div>
+      <div class="screen" id="screen">
+        <div id="screenNumber" class="screen-number" aria-label="Screen number">01</div>
+        <img id="screenImage" class="scr-img" draggable="false" alt="Let's Play screen">
+        <svg id="lineLayer" class="line-layer" viewBox="0 0 375 812" preserveAspectRatio="none">
+          <line id="matchLine" x1="0" y1="0" x2="0" y2="0" stroke="#16a2ff" stroke-width="7" stroke-linecap="round" visibility="hidden"/>
+        </svg>
+        <div id="interactionLayer" class="interaction-layer"></div>
+        <div id="dragPiece" class="drag-piece" hidden><img id="dragPieceImage" draggable="false" alt=""></div>
+      </div>
+    </div>
+
+    <div id="hint" class="hint"></div>
+
+    <div class="demo-controls">
+      <button id="ctrl-back">◀ back</button>
+      <button id="ctrl-skip">skip screen ▶</button>
+      <span id="ctrl-label">1 / 17</span>
+      <button id="ctrl-restart">restart</button>
+      <button id="ctrl-dashboard" aria-expanded="false" aria-controls="dashboardPanel">dashboard</button>
+    </div>
+  </div>
+
+  <aside id="dashboardPanel" class="dashboard-panel" aria-label="Let's Play dashboard" hidden>
+    <div class="dashboard-panel-head">
+      <div>
+        <strong>Dashboard data</strong>
+        <span>Live staged activity</span>
+      </div>
+      <button id="dashboardClose" class="dashboard-close" type="button" aria-label="Close dashboard">×</button>
+    </div>
+    <iframe
+      id="dashboardFrame"
+      class="dashboard-frame"
+      title="Let's Play live dashboard"
+      data-src="../dashboard/index.html"
+    ></iframe>
+  </aside>
+  </div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
