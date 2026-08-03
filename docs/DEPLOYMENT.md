@@ -33,3 +33,14 @@ http://localhost:8000/dashboard/
 ## Live backend
 
 Follow `../supabase/README.md`. Do not commit database passwords or secret/service-role keys.
+
+## Live-data verification
+
+After deploying:
+
+1. Open `/dashboard/`.
+2. Confirm the status reads `Live · connected`.
+3. Open `/src/` or the repository root in another browser.
+4. Advance one screen.
+5. Confirm the dashboard feed updates.
+6. Refresh the dashboard and confirm the event remains.

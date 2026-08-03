@@ -200,3 +200,40 @@ body {
   .kpi-row { grid-template-columns: 1fr 1fr; }
   .lower-row { grid-template-columns: 1fr; }
 }
+
+
+.connection-status {
+  font-weight: 700;
+}
+
+.connection-status[data-status="connected"] {
+  color: #9EF0E7;
+}
+
+.connection-status[data-status="connecting"] {
+  color: #FFE49A;
+}
+
+.connection-status[data-status="error"] {
+  color: #FFB4AA;
+}
+
+.pulse-dot[data-status="connecting"] {
+  background: var(--sun);
+}
+
+.pulse-dot[data-status="error"] {
+  background: var(--coral);
+  animation: none;
+}
+
+.empty-state {
+  margin: 0;
+  color: rgba(27, 42, 74, 0.65);
+  font-size: 0.85rem;
+}
+
+.empty-feed {
+  justify-content: flex-start;
+  color: rgba(27, 42, 74, 0.65);
+}

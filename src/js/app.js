@@ -183,6 +183,88 @@
     { id: 'screen28_level_up', svg: true, type: 'tap', rect: CONTINUE_RECT },
   ];
 
+
+  const analyticsClient = (() => {
+    const config = window.LETS_PLAY_SUPABASE;
+    if (!config || !window.supabase || typeof window.supabase.createClient !== 'function') {
+      console.warn('Live analytics unavailable: Supabase client or configuration is missing.');
+      return null;
+    }
+
+    return window.supabase.createClient(config.url, config.publishableKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+    });
+  })();
+
+  function fallbackUuid() {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+  }
+
+  function getAnonymousSessionId() {
+    const key = 'lets-play-anonymous-session-id';
+    try {
+      const existing = sessionStorage.getItem(key);
+      if (existing) return existing;
+      const created = typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : fallbackUuid();
+      sessionStorage.setItem(key, created);
+      return created;
+    } catch (error) {
+      return typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : fallbackUuid();
+    }
+  }
+
+  const anonymousSessionId = getAnonymousSessionId();
+  let lastViewedStateKey = '';
+
+  async function trackEvent(eventType, metadata = {}, screenOverride = undefined) {
+    if (!analyticsClient) return;
+
+    const st = states[stateIndex];
+    const screenNumberValue = screenOverride === null
+      ? null
+      : Number.isInteger(screenOverride)
+        ? screenOverride
+        : st
+          ? stateIndex + 1
+          : null;
+
+    const safeMetadata = {
+      prototype_version: 'level-1-public',
+      ...metadata,
+    };
+
+    try {
+      const { error } = await analyticsClient
+        .from('learning_events')
+        .insert({
+          anonymous_session_id: anonymousSessionId,
+          event_type: eventType,
+          screen_number: screenNumberValue,
+          language: 'ar',
+          metadata: safeMetadata,
+        });
+
+      if (error) {
+        console.warn('Could not record learning event:', error.message);
+      }
+    } catch (error) {
+      console.warn('Could not record learning event:', error);
+    }
+  }
+
+  trackEvent('session_started', {
+    source: 'github-pages',
+  }, null);
+
   const buildFrames = ['build13_base'];
   const traceFrames = ['trace0', 'trace1', 'trace2', 'trace3', 'trace4', 'trace5', 'trace6', 'trace7'];
 
@@ -313,6 +395,15 @@
     ctrlLabel.textContent = `${stateIndex + 1} / ${states.length}`;
     screenNumber.textContent = String(stateIndex + 1).padStart(2, '0');
 
+    const viewKey = `${stateIndex}:${st.id}`;
+    if (viewKey !== lastViewedStateKey) {
+      lastViewedStateKey = viewKey;
+      trackEvent('screen_viewed', {
+        screen_id: st.id,
+        interaction_type: st.type,
+      });
+    }
+
     let gateUnlocked = st.type === 'tap' && !st.gate; // plain tap screens need no unlock
 
     if (st.type === 'tap' || st.type === 'choice' || st.type === 'match-line') {
@@ -418,6 +509,12 @@
         }
       }
 
+      trackEvent('answer_selected', {
+        screen_id: 'login1',
+        action,
+        accepted: true,
+      });
+
       screen.dispatchEvent(new CustomEvent('screen-complete', {
         bubbles: true,
         detail: {
@@ -503,6 +600,12 @@
           setHint(selected.size ? 'Select as many as you like, then tap Continue.' : 'Select one or more goals, then tap Continue.');
         } else {
           locked = true;
+          trackEvent('answer_selected', {
+            screen_id: st.id,
+            option_index: idx,
+            option_label: opt.label,
+            correct: true,
+          });
           btn.classList.add('onboard-selected');
           btn.setAttribute('aria-pressed', 'true');
           btn.animate(
@@ -523,6 +626,11 @@
           setHint('Choose at least one option first.');
           return;
         }
+        trackEvent('answer_selected', {
+          screen_id: st.id,
+          selected_option_indices: Array.from(selected),
+          correct: true,
+        });
         advance();
       }, 'signin-btn');
       cta.setAttribute('aria-label', 'Continue');
@@ -546,6 +654,10 @@
     st.options.forEach((opt) => {
       const btn = hotspot(opt.rect, (e) => {
         e.stopPropagation();
+        trackEvent('answer_selected', {
+          screen_id: st.id,
+          correct: Boolean(opt.correct),
+        });
         if (opt.correct) {
           onCorrect();
           showHighlight(opt.rect, 'correct');
@@ -623,12 +735,25 @@
   }
 
   function advance() {
+    const completedState = states[stateIndex];
+
+    if (completedState) {
+      trackEvent('screen_completed', {
+        screen_id: completedState.id,
+        interaction_type: completedState.type,
+      });
+    }
+
     if (stateIndex < states.length - 1) {
       stateIndex++;
       buildStep = 0;
       traceStep = 0;
       render();
     } else {
+      trackEvent('lesson_completed', {
+        lesson_id: 'level-1',
+        total_screens: states.length,
+      });
       hint.textContent = "That's the full Level 1 loop — restart to play it again.";
     }
   }
@@ -654,6 +779,9 @@
   skipBtn.addEventListener('click', skip);
   backBtn.addEventListener('click', goBack);
   restartBtn.addEventListener('click', () => {
+    trackEvent('session_started', {
+      source: 'restart',
+    }, null);
     clearTimeout(splashTimer);
     stateIndex = 0;
     buildStep = 0;

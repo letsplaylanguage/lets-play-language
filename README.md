@@ -10,15 +10,15 @@ This repository contains a playable Level 1 prototype, its dashboard interface, 
 - **Playable prototype:** https://letsplaylanguage.github.io/lets-play-language/
 - **Dashboard:** https://letsplaylanguage.github.io/lets-play-language/dashboard/
 
-> GitHub Pages links become active after Pages is enabled for the `main` branch.
+> GitHub Pages is configured from the `main` branch. Deployment status is visible under repository Actions.
 
 ## Eligibility status
 
 | Gate | Status | Evidence |
 |---|---|---|
-| Public open-source repository | In progress | Repository created publicly; initial source commit is the next step |
-| Publicly playable prototype | In progress | Static source is included and ready for GitHub Pages |
-| Minimally live dashboard | Not yet complete | Current dashboard is explicitly staged; Supabase integration is the next implementation step |
+| Public open-source repository | Complete | Source and MIT license are public in this repository |
+| Publicly playable prototype | Complete | GitHub Pages serves the app and dashboard |
+| Minimally live dashboard | Implemented; verify deployment | App events persist in Supabase and stream to the dashboard via Realtime |
 
 The dashboard must not be described as live until app-generated events are stored in Supabase, persist across refreshes, and appear in the public dashboard.
 
@@ -93,15 +93,19 @@ See:
 - [Eligibility evidence checklist](docs/ELIGIBILITY_CHECKLIST.md)
 - [Supabase setup](supabase/README.md)
 
-## Current dashboard state
+## Live dashboard state
 
-The dashboard under `dashboard/` currently demonstrates the intended visual experience using locally generated values. It is **not yet a real-data implementation**. The next milestone replaces the generator with:
+The public app records anonymous learning events in `public.learning_events`. The dashboard loads persisted events for the current day and subscribes to new inserts through Supabase Realtime.
 
-1. A persisted `learning_events` table
-2. Anonymous browser inserts from the app
-3. An initial dashboard query
-4. A Supabase Realtime subscription
-5. A visible connected/disconnected indicator
+The browser sends only:
+
+- Anonymous session identifier
+- Event type
+- Screen number
+- Language code
+- Small non-identifying metadata
+
+It does not send login-field contents, names, email addresses, recordings, exact age, or other child-identifying information.
 
 ## Contributing
 

@@ -22,8 +22,9 @@ Never expose or commit:
 3. Paste and run `schema.sql`.
 4. Confirm `learning_events` appears under **Table Editor**.
 5. Confirm Realtime is enabled for the table.
-6. Add the Project URL and publishable key to the public browser configuration that will be created during integration.
-7. Test an insert, refresh the table, and confirm the row persists.
+6. Confirm `src/js/supabase-config.js` contains the Project URL and publishable key.
+7. Open the public prototype and confirm new rows appear in the table.
+8. Open the dashboard and verify Realtime updates plus persistence after refresh.
 
 ## Minimum audit test
 

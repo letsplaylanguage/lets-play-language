@@ -17,26 +17,26 @@
         <span class="dash-sub">live activity <span class="pulse-dot" id="pulse-dot"></span></span>
       </div>
       <div class="dash-meta">
-        <span>Staged demo data</span>
-        <span id="last-updated">updated just now</span>
+        <span id="connection-status" class="connection-status">Connecting…</span>
+        <span id="last-updated">waiting for a real event</span>
       </div>
     </header>
 
     <section class="kpi-row">
       <div class="kpi">
-        <span class="kpi-label">Active learners now</span>
+        <span class="kpi-label">Active learners · 15 min</span>
         <span class="kpi-value" id="kpi-active">—</span>
       </div>
       <div class="kpi">
-        <span class="kpi-label">Lessons completed today</span>
+        <span class="kpi-label">Screens completed today</span>
         <span class="kpi-value" id="kpi-lessons">—</span>
       </div>
       <div class="kpi">
-        <span class="kpi-label">Streaks kept today</span>
+        <span class="kpi-label">Events received today</span>
         <span class="kpi-value" id="kpi-streaks">—</span>
       </div>
       <div class="kpi kpi-word">
-        <span class="kpi-label">Word of the moment</span>
+        <span class="kpi-label">Latest activity</span>
         <span class="kpi-value kpi-word-value" id="kpi-word">—</span>
       </div>
     </section>
@@ -55,6 +55,8 @@
 
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../src/js/supabase-config.js"></script>
 <script src="js/dashboard.js"></script>
 </body>
 </html>

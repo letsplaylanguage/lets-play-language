@@ -1,17 +1,24 @@
 # Let's Play Dashboard
 
-This directory contains the public dashboard interface.
+This directory contains the public, minimally live dashboard.
 
-## Current status
+## Live behavior
 
-The current implementation uses a local generator in `js/dashboard.js` and is therefore **staged, not live**. It demonstrates layout and update behavior only.
+The dashboard:
 
-The audited live milestone will replace the generator with:
+- Loads persisted events from `public.learning_events`
+- Calculates today’s activity metrics from real rows
+- Subscribes to new inserts through Supabase Realtime
+- Shows connection status and the timestamp of the latest real event
+- Refreshes its initial query periodically for resilience
 
-- An initial query to `public.learning_events`
-- Aggregation of persisted event rows
-- A Supabase Realtime insert subscription
-- A connection-status indicator
-- A last-real-event timestamp
+No random metric generator is used.
 
-See `../supabase/README.md` and `../docs/ELIGIBILITY_CHECKLIST.md`.
+## Audit test
+
+1. Open the public dashboard.
+2. Open the public prototype in another tab or device.
+3. Advance through a screen.
+4. Confirm a new activity row appears.
+5. Refresh the dashboard.
+6. Confirm the row remains visible.
